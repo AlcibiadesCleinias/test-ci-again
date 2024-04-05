@@ -1,0 +1,42 @@
+name: "test"
+
+on:
+  pull_request:
+    paths-ignore:
+      - "**.md"
+      - ".github/**"
+      - "!.github/workflows/test.yml"
+    types:
+      - "labeled"
+      - "synchronize"
+      - "opened"
+      - "reopened"
+  push:
+    branches:
+      - "main"
+    paths-ignore:
+      - "**.md"
+      - ".github/**"
+      - "!.github/workflows/test.yml"
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+env:
+  FORCE_COLOR: true
+  FOUNDRY_PROFILE: "ci"
+
+jobs:
+  build_contracts_packages_and_run_tests_from_prettier_to_integration:
+    name: "Run Prettier Tests, Unittests, Integration Tests"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Run Prettier Test
+        run: /bin/sh -c 'git init . && git add . && pre-commit run --all-files'
