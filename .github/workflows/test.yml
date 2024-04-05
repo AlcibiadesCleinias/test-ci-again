@@ -40,4 +40,5 @@ jobs:
 
       - name: Run Prettier Test
         uses: pre-commit/action@v3.0.1
-        run: /bin/sh -c 'pre-commit run --all-files'
+        with:
+          extra_args: --all-files
